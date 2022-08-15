@@ -1,99 +1,56 @@
 import java.io.*;
+import java.net.URISyntaxException;
+
 
 public class FileSearch  {
-    public static void searcher(String request, int column) throws FileNotFoundException {
-        column--;
-        long strt = System.currentTimeMillis();
+    public static void searcher(String request, int column) throws URISyntaxException {
 
-//-------------------------------------------------------------------------------------------------
-    //TreeSet hassh
+        //Засекаем время
+        long start = System.currentTimeMillis();
+
+        //инициализируем
         BufferedReader reader;
 
+        //Считаем найденые строки
         int lines = 0;
+
         try {
-            reader = new BufferedReader(new FileReader("src\\airports.dat"));
+            reader = new BufferedReader(new FileReader(getFile.getPath2Jar()));
+
+            //Инициализируем для получения строки
             String file;
+
             while ((file = reader.readLine()) != null) {
-                String[] columns = file.split(",");
 
-                if (columns[column].indexOf(request) == 1){
-                lines++;
-                System.out.println( columns[column] + "[" + file + "]");
+                //Убираем кавычки и разделяем по запятой
+                String[] columns = file.replaceAll("\"", "").split(",");
+
+                //Выводим результат поиска
+                if (columns.length >= column) {
+                    if (columns[column].toLowerCase().indexOf(request.toLowerCase()) == 0 ){
+                        lines++;
+                        System.out.println( columns[column] + "[" + file + "]");
+                    }
+
+                } else {
+                    System.out.println("Выбранный столбец выходит за рамки таблицы!");
+                    break;
+                }
 
             }
-
-
-//                Collections.sort(rows);
-//                int i = Collections.binarySearch(rows, request);
-//                System.out.println(i);
-//                System.out.println(rows.get(i));
-            }
+            //Итоги
+            System.out.println(
+                    "Количество найденых строк: " + lines + ", затрачено время на поиск: " +
+                            ((int) (System.currentTimeMillis() - start)) + " мс"
+            );
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("Файл не найден! " + getFile.getPath2Jar());
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Ошибка доступа к файлу!");
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
 
 
-        //-------------------------------------------------------------------------------------------------
 
-//        BufferedReader reader;
-//
-//        int lines = 0;
-//        try {
-//            reader = new BufferedReader(new FileReader("src\\main\\resources\\airports.dat"));
-//            String file;
-//            while ((file = reader.readLine()) != null) {
-//                String[] columns = file.split(",");
-//
-//                if (columns[column].indexOf(request) == 1){
-//                lines++;
-//                System.out.println( columns[column] + "[" + file + "]");
-//
-//            }
-//
-//
-////                Collections.sort(rows);
-////                int i = Collections.binarySearch(rows, request);
-////                System.out.println(i);
-////                System.out.println(rows.get(i));
-//            }
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
-
-        //-------------------------------------------------------------------------------------------------
-
-
-//        File file = new File("src/main/resources/airports.dat");
-//
-//        Scanner scanner = new Scanner(file);
-//
-//        int lines = 0;
-//
-//        //ВЫбрать лучший способ поиска
-//        while (scanner.hasNextLine()){
-//            String line = scanner.nextLine();
-//            String[] columns = line.split(",");
-//
-//            //Исправить как он ищет
-//            if (columns[column].indexOf(request) == 1){
-//                lines++;
-//                System.out.println( columns[column] + "[" + line + "]");
-//
-//            }
-//
-//        }
-//
-//        scanner.close();
-
-        //--------------------------------------------------------------------------------------------
-
-        System.out.println(
-                "Количество найденых строк: " + lines + ", затрачено время на поиск: " +
-                        ((int) (System.currentTimeMillis() - strt)) + " мс"
-        );
-}}
+    }}
